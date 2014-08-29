@@ -1,0 +1,48 @@
+<form name="addressForm" ng-submit="itemSave(itemForm.$valid)" novalidate autocomplete="off">
+  <div class="form-group has-feedback">
+     <label for="postalcode">Postnummer:</label>
+     <!-- Add lookup validation + return city -->
+     <input
+      type="text"
+      ng-pattern="/^[0-9]{4}$/"
+      name="postalcode"
+      class="form-control"
+      ng-model="address.postalcode"
+      required
+      autocomplete="off"
+      placeholder="fx 6100"
+      autofocus
+     >
+     <span class="form-control-feedback">
+       <span class="glyphicon" ng-class="{true:'glyphicon-remove', false: 'glyphicon-ok'}[addressForm.postalcode.$invalid]" ></span>
+     </span>
+     <div class="label label-danger" ng-show="addressForm.postalcode.$error.pattern">Forkert postnummer!</div>
+  </div>
+  <div class="form-group has-feedback">
+     <label for="address">Adresse{{address.cityLabel}}:</label>
+     <input
+      id="addresse-input"
+      placeholder="vejnavn husnr, etage. dør, postnummer"
+      ng-disabled="addressForm.postalcode.$invalid"
+      type="text"
+      name="address"
+      class="form-control"
+      ng-model="address.address"
+      ng-change="updateTypeahead()"
+      ng-blur="addressFocus = false"
+      required
+      inf-address-field
+     >
+     <span class="form-control-feedback">
+        <span class="glyphicon" ng-class="{true:'glyphicon-remove', false: 'glyphicon-ok'}[addressForm.address.$invalid]" ></span>
+     </span>
+     <div class="list-group" id="list-suggestions" ng-click="selectTypeahead($event)" ng-show="showSuggestions">
+       <a class="list-group-item" ng-repeat="suggestion in suggestions" ng-mouseover="hoverRow($index)" ng-class="{true:'active'}[$index == currentIndex]" data-suggestion="{{suggestion.tekst}}" data-index="{{$index}}">{{suggestion.tekst}}</a>
+     </div>
+  </div>
+
+  <div class="form-group">
+     <input type="submit" id="submit" value="Save" ng-disabled="addressForm.$invalid" />
+  </div>
+  {{address | json}}
+</form>
