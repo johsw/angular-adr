@@ -9,16 +9,14 @@
  */
 angular.module('adrApp')
   .controller('MainCtrl', ['$scope', 'infAddressTypeahead', function ($scope, infAddressTypeahead) {
-
   }])
   .directive('infAddressField', ['infAddressTypeahead', function(infAddressTypeahead) {
     return {
       require: 'ngModel',
       link: function($scope, element, attr, ngModel) {
         $scope.$watch('address.address', function(val){
-          var check = val.search(/[. ]*[0-9]+, [., ]*[1-9][0-9]{3} [\w ]+/);
-          console.log(check);
-          ngModel.$setValidity('formalAddress', check > 0);
+          var check = val.search(/^\D+[\D ]*?[0-9]+[a-zA-ZæøåÆØÅ]*,\s*([\w\.]* [\w\.]*, ){0,1}[0-9]{4} [\D ]+$/);
+          ngModel.$setValidity('formalAddress', check > -1);
         });
         
       }
