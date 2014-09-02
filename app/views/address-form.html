@@ -46,3 +46,21 @@
      <input type="submit" id="submit" value="Save" ng-disabled="addressForm.$invalid" />
   </div>
 </form>
+<div class="modal fade" inf-address-modal data-backdrop="static">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Vælg adresse</h4>
+        <p>Den indtastede adresse gav flere resultater. Vælg den der passer.</p>
+      </div>
+      <div class="modal-body">
+        <div class="list-group" id="list-suggestions-modal" ng-click="selectTypeahead($event)" ng-show="showModal">
+          <a class="list-group-item" ng-repeat="suggestion in suggestions" ng-mouseover="hoverRow($index)" ng-class="{true:'active'}[$index == currentIndex]" data-suggestion="{{suggestion.tekst}}" data-index="{{$index}}">{{suggestion.tekst}}</a>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <!--- <button type="button" class="btn btn-primary">Save changes</button> -->
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->

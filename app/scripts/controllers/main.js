@@ -28,6 +28,7 @@ angular.module('adrApp')
       templateUrl: 'views/address-form.html',
       link: function($scope, element, attr) {
         $scope.showSuggestions = false;
+        $scope.showModal = false;
         $scope.currentIndex = -1;
         $scope.suggestions = [];
         $scope.address = {
@@ -45,20 +46,21 @@ angular.module('adrApp')
                  return a.tekst.localeCompare(b.tekst);
                });
                $scope.suggestions = sorted;
-               console.log($scope.suggestions);
+               $scope.showModal = true;
             });
           }
         }
 
         // Update textfield accoding to choice
         $scope.selectTypeahead = function($event) {
+          console.log($event.currentTarget.id);
           $scope.showSuggestions = false;
+          $scope.showModal = false;
           $scope.address.address = $event.target.dataset.suggestion;
           $scope.address.selected = $scope.suggestions[$event.target.dataset.index].adresse;
           //$scope.address.selected =
           // This somehow feels wrong
           element[0].querySelectorAll('#addresse-input')[0].focus()
-
         }
         // Update suggestions based on input
         $scope.updateTypeahead = function() {
@@ -144,6 +146,21 @@ angular.module('adrApp')
       }
     };
   }])
+  .directive('infAddressModal', function() {
+      return {
+          link: function($scope, element, attrs) {
+              $scope.$watch('showModal', function(value) {
+                  if (value) {
+                    $scope.showSuggestions = false;
+                    element.modal('show');
+                  }
+                  else { 
+                    element.modal('hide');
+                  }
+              });
+          }
+      };
+  })
   .factory('infAddressTypeahead', ['$http', function($http) {
     var lookup = {
       lookupStreet: function(streetParticle, postalCode) {
