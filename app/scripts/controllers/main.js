@@ -15,7 +15,7 @@ angular.module('adrApp')
       require: 'ngModel',
       link: function($scope, element, attr, ngModel) {
         $scope.$watch('address.address', function(val){
-          if (val.length > 0) {
+          if (!angular.isUndefined(val) && val.length > 0) {
             var check = val.search(/^\D+[\D ]*?[0-9]+[a-zA-ZæøåÆØÅ]*,\s*([\w\.]* [\w\.]*, ){0,1}[0-9]{4} [\D ]+$/);
             ngModel.$setValidity('formalAddress', check > -1);
           }
@@ -36,6 +36,19 @@ angular.module('adrApp')
           selected: {},
         };
 
+        // Update textfield accoding to choice
+        $scope.validateAddress = function() {
+          // If no address has been selected
+          if (angular.isUndefined($scope.address.selected)) {
+            infAddressTypeahead.lookupAutocompleteValidate($scope.address.address).then(function(data){
+               var sorted = data.data.sort(function(a,b) {
+                 return a.tekst.localeCompare(b.tekst);
+               });
+               $scope.suggestions = sorted;
+               console.log($scope.suggestions);
+            });
+          }
+        }
 
         // Update textfield accoding to choice
         $scope.selectTypeahead = function($event) {
@@ -50,7 +63,7 @@ angular.module('adrApp')
         // Update suggestions based on input
         $scope.updateTypeahead = function() {
           //If something's written...
-          if ($scope.address.address.length > 0) {
+          if (!angular.isUndefined($scope.address.address) && $scope.address.address.length > 0) {
             //If there's no number...
             if ($scope.address.address.search(/[0-9]/) <= 0) {
               infAddressTypeahead.lookupStreet($scope.address.address, $scope.address.postalcode).then(function(data){
