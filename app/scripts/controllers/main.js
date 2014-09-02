@@ -124,24 +124,14 @@ angular.module('adrApp')
                 event.preventDefault;
                 event.stopPropagation();
               }
-
+            case 27: // ENTER
+              $scope.address.selected = {};
+              $scope.showSuggestions = false;
+              $scope.$apply();
+              event.preventDefault;
+              event.stopPropagation();
+              break;
           }
-              /*
-              } else {
-                  $scope.results = [];
-                  $scope.$apply();
-                  event.preventDefault;
-                  event.stopPropagation();
-              }
-
-          } else if (event.which == 27) {
-              $scope.results = [];
-              $scope.showDropdown = false;
-              $scope.$apply();
-          } else if (event.which == 8) {
-              $scope.selectedObject = null;
-              $scope.$apply();
-          }*/
         });
       }
     };
