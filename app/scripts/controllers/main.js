@@ -15,10 +15,11 @@ angular.module('adrApp')
       require: 'ngModel',
       link: function($scope, element, attr, ngModel) {
         $scope.$watch('address.address', function(val){
-          var check = val.search(/^\D+[\D ]*?[0-9]+[a-zA-ZæøåÆØÅ]*,\s*([\w\.]* [\w\.]*, ){0,1}[0-9]{4} [\D ]+$/);
-          ngModel.$setValidity('formalAddress', check > -1);
+          if (val.length > 0) {
+            var check = val.search(/^\D+[\D ]*?[0-9]+[a-zA-ZæøåÆØÅ]*,\s*([\w\.]* [\w\.]*, ){0,1}[0-9]{4} [\D ]+$/);
+            ngModel.$setValidity('formalAddress', check > -1);
+          }
         });
-        
       }
     };
   }])
@@ -34,17 +35,17 @@ angular.module('adrApp')
           postalcode: '',
           selected: {},
         };
-        
-        
-        // Update textfield accoding to choise
+
+
+        // Update textfield accoding to choice
         $scope.selectTypeahead = function($event) {
           $scope.showSuggestions = false;
           $scope.address.address = $event.target.dataset.suggestion;
           $scope.address.selected = $scope.suggestions[$event.target.dataset.index].adresse;
-          //$scope.address.selected = 
+          //$scope.address.selected =
           // This somehow feels wrong
           element[0].querySelectorAll('#addresse-input')[0].focus()
-          
+
         }
         // Update suggestions based on input
         $scope.updateTypeahead = function() {
@@ -58,7 +59,7 @@ angular.module('adrApp')
                     tekst: item.tekst + ' '
                   };
                 })
-                
+
                 $scope.suggestions = suggestions;
               });
             // If there is a number...
@@ -75,7 +76,7 @@ angular.module('adrApp')
           // If nothing is written
           } else {
             $scope.showSuggestions = false;
-          } 
+          }
         }
         $scope.hoverRow = function(index) {
           $scope.currentIndex = index;
@@ -109,7 +110,7 @@ angular.module('adrApp')
                 event.stopPropagation();
               }
 
-          } 
+          }
               /*
               } else {
                   $scope.results = [];
@@ -136,12 +137,11 @@ angular.module('adrApp')
         return $http.get('http://dawa.aws.dk/vejnavne/autocomplete?postnr=' + postalCode + '&q=' + streetParticle);
       },
       lookupNumber: function(street, addressParticle, postalCode) {
-        /* http://dawa.aws.dk/adresser/autocomplete?vejnavn=Rødkildevej&q=Rødkildevej 4 */
         return $http.get('http://dawa.aws.dk/adresser/autocomplete?postnr=' + postalCode + '&vejnavn=' + street + '&q=' + addressParticle);
-      }/*,
-      lookupPostal: function(postalCode) {
-        return $http.get('http://dawa.aws.dk/postnumre/autocomplete?q=' + postalCode);
-      }*/
+      },
+      lookupAutocompleteValidate: function(addressParticle) {
+        return $http.get('http://dawa.aws.dk/adresser/autocomplete?q=' + addressParticle);
+      }
     }
     return lookup;
   }]);
